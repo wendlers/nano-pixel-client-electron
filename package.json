@@ -1,0 +1,24 @@
+{
+  "name": "bleleds",
+  "version": "0.0.1",
+  "description": "BLE LEDs application",
+  "main": "app/main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "repository": "todo",
+  "keywords": [
+    "Electron",
+    "ws2812b",
+    "ble"
+  ],
+  "author": "Stefan Wendler",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "~1.7.8",
+    "electron-rebuild": "^1.6.0"
+  },
+  "dependencies": {
+    "noble": "~1.8.1"
+  }
+}
