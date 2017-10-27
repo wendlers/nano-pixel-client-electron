@@ -13,7 +13,7 @@ let mainWindow
 
 function createWindow () {
   // Create the browser window.
-  mainWindow = new BrowserWindow({width: 350, height: 620})
+  mainWindow = new BrowserWindow({width: 380, height: 680, resizable: false})
 
   // and load the index.html of the app.
   mainWindow.loadURL(url.format({
@@ -32,6 +32,8 @@ function createWindow () {
     // when you should delete the corresponding element.
     mainWindow = null
   })
+
+  require('./menu')
 }
 
 // This method will be called when Electron has finished

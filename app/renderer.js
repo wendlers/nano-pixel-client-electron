@@ -3,6 +3,7 @@ var noble = require('noble/index');
 var serviceUUIDs = ['9e59ac01af5bbdbe34481bd5ccf05e76'];
 var setLedChar = null;
 var cmdChar = null;
+var brightnessChar = null;
 var device_connected_cb = null;
 var deviceDisonnectedCb = null;
 
@@ -45,18 +46,14 @@ noble.on('discover', function(peripheral) {
     service.once('characteristicsDiscover', function(characteristics) {
         console.log('characteristics discoverd: ' + characteristics);
 
-        if(characteristics.length == 2) {
-          if(characteristics[0].uuid == '9e59ac02af5bbdbe34481bd5ccf05e76') {
-              setLedChar = characteristics[0];
-              cmdChar = characteristics[1];
-          }
-          else {
-            setLedChar = characteristics[1];
-            cmdChar = characteristics[0];
-          }
+        if(characteristics.length == 3) {
+          setLedChar = characteristics[0];
+          cmdChar = characteristics[1];
+          brightnessChar = characteristics[2];
 
           console.log('setLedChar: ' + setLedChar);
           console.log('cmdChar: ' + cmdChar);
+          console.log('brightnessChar: ' + brightnessChar);
 
           if(device_connected_cb) {
             device_connected_cb();
@@ -77,8 +74,8 @@ exports.on_device_disconnected = function(func) {
   device_disconnected_cb = func;
 }
 
-exports.upload = function (matrix_buffer) {
-  if(cmdChar) {
+exports.upload = function (matrix_buffer, brightness) {
+  if(cmdChar && setLedChar && brightnessChar) {
 
     for(x = 0; x < 8; x++) {
 			for(y = 0; y < 8; y++){
@@ -89,8 +86,12 @@ exports.upload = function (matrix_buffer) {
 			}
 		}
 
+    console.log('writing brightnessChar');
+    var buf = Buffer.from([brightness % 100]);
+    brightnessChar.write(buf, false)
+
     console.log('writing cmdChar');
-    var buf = Buffer.from([1]);
+    buf = Buffer.from([1]);
     cmdChar.write(buf, false);
   }
 }

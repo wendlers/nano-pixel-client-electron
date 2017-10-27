@@ -4,7 +4,7 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>Default theme - jQuery Mobile Demos</title>
+  <title>Nano-Pixel-BLE</title>
 
 	<link rel="stylesheet" href="css/themes/default/jquery.mobile-1.4.5.min.css">
   <link rel="stylesheet" href="css/jqm-simple-colorpicker.min.css">
@@ -40,6 +40,10 @@
   </script>
 
   <style>
+		table{
+			margin-top: 15px;
+			margin-bottom: 15px;
+		}
     td {
       padding: 2px;
       width: 28px;
@@ -52,15 +56,12 @@
 <body>
 <div data-role="page" id="testpage">
 
-	<div data-role="header">
-		<h1>BLEoPixel</h1>
-	</div><!-- /header -->
-
 	<div class="ui-content" role="main">
 
-		<a href="#" data-role="button" id="blank" onclick="blank()">Blank</a>
-
     <div id="picker" data-role="colorpicker" data-transition="turn"></div>
+
+		<label for="brightness">Brightness:</label>
+		<input type="range" name="brightness" id="brightness" value="10" min="0" max="100">
 
     <table align="center" id="leds">
 			<tr>
@@ -154,6 +155,7 @@
       </tr>
     <table>
 
+		<a href="#" data-role="button" id="blank" onclick="blank()">Blank</a>
 		<a href="#" class="ui-disabled" data-role="button" id="upload" onclick="upload()">Upload</a>
 
 	</div><!-- /content -->
@@ -231,9 +233,11 @@
 			}
 		}
 
-		console.log('upload: ' + matrix_buffer[0][0]);
+		var brightness = $('#brightness').val();
 
-		renderer.upload(matrix_buffer);
+		console.log('brightness: ' + brightness);
+
+		renderer.upload(matrix_buffer, brightness);
 
 		var loading_time = setInterval(function() {
 
