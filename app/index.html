@@ -167,19 +167,18 @@
 </div><!-- /page -->
 <script>
 
-  var renderer = nodeRequire('./renderer.js')
+	var ws2812b = nodeRequire('./ws2812b_service');
 
-	renderer.on_device_connected(function () {
-		console.log("device connected");
-		$('#upload').removeClass('ui-disabled');
-		$('#message').text('connected');
-	});
-
-	renderer.on_device_disconnected(function () {
-		console.log("device disconnected");
-		$('#upload').addClass('ui-disabled');
-		$('#message').text('disconnected');
-	});
+	var leds = new ws2812b.Service(() => {
+			console.log("device connected");
+			$('#upload').removeClass('ui-disabled');
+			$('#message').text('connected');
+		},
+		() => {
+			console.log("device disconnected");
+			$('#upload').addClass('ui-disabled');
+			$('#message').text('disconnected');
+		});
 
 	function setLed(x, y) {
 
@@ -237,7 +236,7 @@
 
 		console.log('brightness: ' + brightness);
 
-		renderer.upload(matrix_buffer, brightness);
+		leds.upload(matrix_buffer, brightness);
 
 		var loading_time = setInterval(function() {
 
