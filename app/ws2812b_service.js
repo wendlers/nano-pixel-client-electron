@@ -70,23 +70,35 @@ exports.Service = class Service
     });
   }
 
-  upload(matrix_buffer, brightness)
-  {
-    if(this.cmd_char && this.set_led_char && this.brightness_char) {
+  setLed(x, y, rgb) {
+    if(this.set_led_char) {
+      var buf = Buffer.from([x, 0, y, 0, rgb[0], rgb[1], rgb[2]]);
+      this.set_led_char.write(buf, false);
+    }
+  }
 
-      for(x = 0; x < 8; x++) {
-  			for(y = 0; y < 8; y++){
-  				var rgb = matrix_buffer[x][y];
-          var buf = Buffer.from([x, 0, y, 0, rgb[0], rgb[1], rgb[2]]);
-          this.set_led_char.write(buf, false);
-  			}
-  		}
-
-      var buf = Buffer.from([brightness % 100]);
+  setBrightnes(brightness) {
+    if(this.brightness_char) {
+      var buf = Buffer.from([(brightness / 2) % 50]);
       this.brightness_char.write(buf, false)
+    }
+  }
 
-      buf = Buffer.from([1]);
+  update() {
+    if(this.cmd_char) {
+      var buf = Buffer.from([1]);
       this.cmd_char.write(buf, false);
     }
+  }
+
+  upload(matrix_buffer, brightness)
+  {
+    for(x = 0; x < 8; x++) {
+			for(y = 0; y < 8; y++){
+				this.setLed(x, y, matrix_buffer[x][y]);
+			}
+		}
+    this.setBrightnes(brightness);
+    this.update();
   }
 }

@@ -8,6 +8,7 @@
 
 	<link rel="stylesheet" href="css/themes/default/jquery.mobile-1.4.5.min.css">
   <link rel="stylesheet" href="css/jqm-simple-colorpicker.min.css">
+	<link rel="stylesheet" href="css/style.css">
 
   <script>
     window.nodeRequire = require;
@@ -21,40 +22,15 @@
   <script src="js/jqm-simple-colorpicker.min.js"></script>
 
   <script type="text/javascript">
+		var renderer = nodeRequire('./renderer');
 
-		var busy = false;
-
-     $(function(){
-        $('#picker').colorpicker('option', {
-           picked:function(event, data) {
-              $('div[data-role=choosen-color]').css('background-color', data.color)
-           },
-           defaultColor:$('div[data-role=choosen-color]').css('background-color')
-        })
-        $('#button').click(function() {
-					if(!busy) {
-          	$('#picker').colorpicker('open')
-					}
-        })
-     });
+		$(function() {
+			renderer.init();
+		});
   </script>
-
-  <style>
-		table{
-			margin-top: 15px;
-			margin-bottom: 15px;
-		}
-    td {
-      padding: 2px;
-      width: 28px;
-      height: 28px;
-      border: solid black 2px;
-      background-color: black;
-    }
-  </style>
 </head>
 <body>
-<div data-role="page" id="testpage">
+<div data-role="page" id="ledgrid">
 
 	<div class="ui-content" role="main">
 
@@ -63,193 +39,20 @@
 		<label for="brightness">Brightness:</label>
 		<input type="range" name="brightness" id="brightness" value="10" min="0" max="100">
 
-    <table align="center" id="leds">
-			<tr>
-				<td colspan="8" style="padding: 0px; margin: 0px;">
-					<a class="ui-disabled" id="button" href="#picker" data-rel="popup">
-						<div
-							data-role="choosen-color"
-							style="background-color: white; width: 100%; height: 32px; text-align: center;"></div>
-					</a>
-				</td>
-			</tr>
-      <tr>
-        <td id='led-0-0' onclick="setLed(0, 0)"></td>
-        <td id='led-0-1' onclick="setLed(0, 1)"></td>
-        <td id='led-0-2' onclick="setLed(0, 2)"></td>
-        <td id='led-0-3' onclick="setLed(0, 3)"></td>
-        <td id='led-0-4' onclick="setLed(0, 4)"></td>
-        <td id='led-0-5' onclick="setLed(0, 5)"></td>
-        <td id='led-0-6' onclick="setLed(0, 6)"></td>
-        <td id='led-0-7' onclick="setLed(0, 7)"></td>
-      </tr>
-      <tr>
-        <td id='led-1-0' onclick="setLed(1, 0)"></td>
-        <td id='led-1-1' onclick="setLed(1, 1)"></td>
-        <td id='led-1-2' onclick="setLed(1, 2)"></td>
-        <td id='led-1-3' onclick="setLed(1, 3)"></td>
-        <td id='led-1-4' onclick="setLed(1, 4)"></td>
-        <td id='led-1-5' onclick="setLed(1, 5)"></td>
-        <td id='led-1-6' onclick="setLed(1, 6)"></td>
-        <td id='led-1-7' onclick="setLed(1, 7)"></td>
-      </tr>
-      <tr>
-        <td id='led-2-0' onclick="setLed(2, 0)"></td>
-        <td id='led-2-1' onclick="setLed(2, 1)"></td>
-        <td id='led-2-2' onclick="setLed(2, 2)"></td>
-        <td id='led-2-3' onclick="setLed(2, 3)"></td>
-        <td id='led-2-4' onclick="setLed(2, 4)"></td>
-        <td id='led-2-5' onclick="setLed(2, 5)"></td>
-        <td id='led-2-6' onclick="setLed(2, 6)"></td>
-        <td id='led-2-7' onclick="setLed(2, 7)"></td>
-      </tr>
-      <tr>
-        <td id='led-3-0' onclick="setLed(3, 0)"></td>
-        <td id='led-3-1' onclick="setLed(3, 1)"></td>
-        <td id='led-3-2' onclick="setLed(3, 2)"></td>
-        <td id='led-3-3' onclick="setLed(3, 3)"></td>
-        <td id='led-3-4' onclick="setLed(3, 4)"></td>
-        <td id='led-3-5' onclick="setLed(3, 5)"></td>
-        <td id='led-3-6' onclick="setLed(3, 6)"></td>
-        <td id='led-3-7' onclick="setLed(3, 7)"></td>
-      </tr>
-      <tr>
-        <td id='led-4-0' onclick="setLed(4, 0)"></td>
-        <td id='led-4-1' onclick="setLed(4, 1)"></td>
-        <td id='led-4-2' onclick="setLed(4, 2)"></td>
-        <td id='led-4-3' onclick="setLed(4, 3)"></td>
-        <td id='led-4-4' onclick="setLed(4, 4)"></td>
-        <td id='led-4-5' onclick="setLed(4, 5)"></td>
-        <td id='led-4-6' onclick="setLed(4, 6)"></td>
-        <td id='led-4-7' onclick="setLed(4, 7)"></td>
-      </tr>
-      <tr>
-        <td id='led-5-0' onclick="setLed(5, 0)"></td>
-        <td id='led-5-1' onclick="setLed(5, 1)"></td>
-        <td id='led-5-2' onclick="setLed(5, 2)"></td>
-        <td id='led-5-3' onclick="setLed(5, 3)"></td>
-        <td id='led-5-4' onclick="setLed(5, 4)"></td>
-        <td id='led-5-5' onclick="setLed(5, 5)"></td>
-        <td id='led-5-6' onclick="setLed(5, 6)"></td>
-        <td id='led-5-7' onclick="setLed(5, 7)"></td>
-      </tr>
-      <tr>
-        <td id='led-6-0' onclick="setLed(6, 0)"></td>
-        <td id='led-6-1' onclick="setLed(6, 1)"></td>
-        <td id='led-6-2' onclick="setLed(6, 2)"></td>
-        <td id='led-6-3' onclick="setLed(6, 3)"></td>
-        <td id='led-6-4' onclick="setLed(6, 4)"></td>
-        <td id='led-6-5' onclick="setLed(6, 5)"></td>
-        <td id='led-6-6' onclick="setLed(6, 6)"></td>
-        <td id='led-6-7' onclick="setLed(6, 7)"></td>
-      </tr>
-      <tr>
-        <td id='led-7-0' onclick="setLed(7, 0)"></td>
-        <td id='led-7-1' onclick="setLed(7, 1)"></td>
-        <td id='led-7-2' onclick="setLed(7, 2)"></td>
-        <td id='led-7-3' onclick="setLed(7, 3)"></td>
-        <td id='led-7-4' onclick="setLed(7, 4)"></td>
-        <td id='led-7-5' onclick="setLed(7, 5)"></td>
-        <td id='led-7-6' onclick="setLed(7, 6)"></td>
-        <td id='led-7-7' onclick="setLed(7, 7)"></td>
-      </tr>
-    <table>
+		<a class="ui-disabled" id="button" href="#picker" data-rel="popup">
+			<div id="choosen-color" data-role="choosen-color"></div>
+		</a>
+		<div id="grid"></div>
 
-		<a href="#" data-role="button" id="blank" onclick="blank()">Blank</a>
-		<a href="#" class="ui-disabled" data-role="button" id="upload" onclick="upload()">Upload</a>
+		<a href="#" data-role="button" id="blank">Blank</a>
+		<a href="#" class="ui-disabled" data-role="button" id="upload">Upload</a>
 
-	</div><!-- /content -->
+	</div><
 
 	<div data-role="footer" data-position="fixed">
 		<h4 id="message">disconnected</h4>
 	</div>
 
-</div><!-- /page -->
-<script>
-
-	var ws2812b = nodeRequire('./ws2812b_service');
-
-	var leds = new ws2812b.Service(() => {
-			console.log("device connected");
-			$('#upload').removeClass('ui-disabled');
-			$('#message').text('connected');
-		},
-		() => {
-			console.log("device disconnected");
-			$('#upload').addClass('ui-disabled');
-			$('#message').text('disconnected');
-		});
-
-	function setLed(x, y) {
-
-		if(busy) {
-			return;
-		}
-
-		var led_addr = '#led-' + x + '-' + y;
-		var col1 = $(led_addr).css('background-color');
-		var col2 = $('div[data-role=choosen-color]').css('background-color');
-
-		if(col1 == col2) {
-			col2 = '#000000';
-		}
-
-		$(led_addr).css('background-color', col2);
-	};
-
-	function getLed(x, y) {
-		var led_addr = '#led-' + x + '-' + y;
-		return $(led_addr).css('background-color');
-	};
-
-	function blank() {
-		for(x = 0; x < 8; x++) {
-		 for(y = 0; y < 8; y++) {
-			 var led_addr = '#led-' + x + '-' + y;
-			 $(led_addr).css('background-color', '#000000');
-		 }
-	 }
-	};
-
-	function upload() {
-
-		busy = true;
-
-		$('#blank').addClass('ui-disabled');
-		$('#upload').addClass('ui-disabled');
-
-		$.mobile.loading("show", {
-		  text: "uploading",
-		  textVisible: true,
-		});
-
-		var matrix_buffer = [[] ,[], [], [], [], [], [], []];
-
-		for(x = 0; x < 8; x++) {
-			for(y = 0; y < 8; y++){
-				var c = getLed(x, y);
-				matrix_buffer[x][y] = c.substr(4,c.length - 5).split(', ');
-			}
-		}
-
-		var brightness = $('#brightness').val();
-
-		console.log('brightness: ' + brightness);
-
-		leds.upload(matrix_buffer, brightness);
-
-		var loading_time = setInterval(function() {
-
-			clearInterval(loading_time);
-
-			$.mobile.loading("hide");
-
-			$('#blank').removeClass('ui-disabled');
-			$('#upload').removeClass('ui-disabled');
-
-			busy = false;
-		}, 10000);
-	};
-</script>
+</div>
 </body>
 </html>

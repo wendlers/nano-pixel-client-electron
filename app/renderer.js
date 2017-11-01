@@ -1,97 +1,132 @@
-var noble = require('noble/index');
+var ws2812b = nodeRequire('./ws2812b_service');
 
-var serviceUUIDs = ['9e59ac01af5bbdbe34481bd5ccf05e76'];
-var setLedChar = null;
-var cmdChar = null;
-var brightnessChar = null;
-var device_connected_cb = null;
-var deviceDisonnectedCb = null;
-
-noble.on('stateChange', function(state) {
-  if (state === 'poweredOn') {
-    noble.startScanning(serviceUUIDs, false);
-  } else {
-    noble.stopScanning();
-  }
-});
-
-noble.on('discover', function(peripheral) {
-
-  console.log('peripheral discovered (' + peripheral.id +
-              ' with address <' + peripheral.address +  ', ' + peripheral.addressType + '>,' +
-              ' connectable ' + peripheral.connectable + ',' +
-              ' RSSI ' + peripheral.rssi + ':');
-
-  peripheral.connect();
-
-  peripheral.once('connect', function() {
-    this.discoverServices(serviceUUIDs);
+var leds = new ws2812b.Service(() => {
+    console.log("device connected");
+    $('#upload').removeClass('ui-disabled');
+    $('#message').text('connected');
+  },
+  () => {
+    console.log("device disconnected");
+    $('#upload').addClass('ui-disabled');
+    $('#message').text('disconnected');
   });
 
-  peripheral.once('disconnect', function() {
-    if(device_disconnected_cb) {
-      device_disconnected_cb();
-      noble.startScanning(serviceUUIDs, false);
+var busy = false;
+
+function isBusy() {
+    return busy;
+}
+
+function getLed(x, y) {
+  var led_addr = '#led-' + x + '-' + y;
+  return $(led_addr).css('background-color');
+}
+
+function setLed(x, y) {
+
+  if(busy) {
+    return;
+  }
+
+  var led_addr = '#led-' + x + '-' + y;
+  var col1 = $(led_addr).css('background-color');
+  var col2 = $('div[data-role=choosen-color]').css('background-color');
+
+  if(col1 == col2) {
+    col2 = '#000000';
+  }
+
+  $(led_addr).css('background-color', col2);
+}
+
+function blank()
+{
+  for(x = 0; x < 8; x++) {
+   for(y = 0; y < 8; y++) {
+     var led_addr = '#led-' + x + '-' + y;
+     $(led_addr).css('background-color', '#000000');
+   }
+ }
+}
+
+function upload()
+{
+  busy = true;
+
+  $('#blank').addClass('ui-disabled');
+  $('#upload').addClass('ui-disabled');
+
+  $.mobile.loading("show", {
+    text: "uploading",
+    textVisible: true,
+  });
+
+  var matrix_buffer = [[] ,[], [], [], [], [], [], []];
+
+  for(x = 0; x < 8; x++) {
+    for(y = 0; y < 8; y++){
+      var c = getLed(x, y);
+      matrix_buffer[x][y] = c.substr(4,c.length - 5).split(', ');
     }
-  });
-
-  peripheral.once('servicesDiscover', function(services) {
-
-    var service = services[0];
-
-    console.log('service discovered: ' + service);
-
-    service.discoverCharacteristics();
-
-    service.once('characteristicsDiscover', function(characteristics) {
-        console.log('characteristics discoverd: ' + characteristics);
-
-        if(characteristics.length == 3) {
-          setLedChar = characteristics[0];
-          cmdChar = characteristics[1];
-          brightnessChar = characteristics[2];
-
-          console.log('setLedChar: ' + setLedChar);
-          console.log('cmdChar: ' + cmdChar);
-          console.log('brightnessChar: ' + brightnessChar);
-
-          if(device_connected_cb) {
-            device_connected_cb();
-          }
-        }
-        else {
-          console.log('invalid number of characteristics!');
-        }
-    });
-  });
-});
-
-exports.on_device_connected = function(func) {
-  device_connected_cb = func;
-}
-
-exports.on_device_disconnected = function(func) {
-  device_disconnected_cb = func;
-}
-
-exports.upload = function (matrix_buffer, brightness) {
-  if(cmdChar && setLedChar && brightnessChar) {
-
-    for(x = 0; x < 8; x++) {
-			for(y = 0; y < 8; y++){
-				var rgb = matrix_buffer[x][y];
-        var buf = Buffer.from([x, 0, y, 0, rgb[0], rgb[1], rgb[2]]);
-        console.log('wrting setLedChar');
-        setLedChar.write(buf, false);
-			}
-		}
-
-    console.log('writing brightnessChar');
-    var buf = Buffer.from([brightness % 100]);
-    brightnessChar.write(buf, false)
-
-    console.log('writing cmdChar');
-    buf = Buffer.from([1]);
-    cmdChar.write(buf, false);
   }
+
+  var brightness = $('#brightness').val();
+
+  console.log('brightness: ' + brightness);
+
+  leds.upload(matrix_buffer, brightness);
+
+  var loading_time = setInterval(function() {
+
+    clearInterval(loading_time);
+
+    $.mobile.loading("hide");
+
+    $('#blank').removeClass('ui-disabled');
+    $('#upload').removeClass('ui-disabled');
+
+    busy = false;
+  }, 10000);
 }
+
+function createLedGrid(max_x, max_y)
+{
+  let table = $('<div></div>').addClass('table');
+
+  for(let y = 0; y < max_y; y++) {
+
+    let row = $('<div></div>').addClass('table-row');
+    table.append(row);
+
+    for(let x = 0; x < max_x; x++) {
+        let cell = $('<div id="led-' + x +'-' + y +'"></div>').addClass('table-cell');
+        cell.click(() => { setLed(x, y) });
+        row.append(cell);
+    }
+  }
+
+  $('#grid').append(table);
+}
+
+function init()
+{
+    createLedGrid(8, 8);
+
+    $('#upload').click(() => { upload() });
+    $('#blank').click(()  => { blank() });
+
+    $('#picker').colorpicker('option', {
+       picked:function(event, data) {
+          $('div[data-role=choosen-color]').css('background-color', data.color)
+       },
+       defaultColor:$('div[data-role=choosen-color]').css('background-color')
+    });
+
+    $('#button').click(function() {
+      if(!isBusy()) {
+        $('#picker').colorpicker('open')
+      }
+    });
+}
+
+exports.init = init;

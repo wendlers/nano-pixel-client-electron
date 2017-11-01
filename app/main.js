@@ -12,8 +12,19 @@ const url = require('url')
 let mainWindow
 
 function createWindow () {
+
+  let debug = false
+
+  if(process.argv[2] && process.argv[2] == 'debug') {
+      debug = true
+  }
   // Create the browser window.
-  mainWindow = new BrowserWindow({width: 1280, height: 680, resizable: false})
+  if(debug) {
+    mainWindow = new BrowserWindow({width: 1280, height: 680, resizable: false})
+  }
+  else {
+    mainWindow = new BrowserWindow({width: 300, height: 610, resizable: false})
+  }
 
   // and load the index.html of the app.
   mainWindow.loadURL(url.format({
@@ -22,8 +33,10 @@ function createWindow () {
     slashes: true
   }))
 
-  // Open the DevTools.
-  mainWindow.webContents.openDevTools()
+  if(debug) {
+    // Open the DevTools.
+    mainWindow.webContents.openDevTools()
+  }
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function () {

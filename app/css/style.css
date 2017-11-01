@@ -1,0 +1,28 @@
+#choosen-color {
+  background-color: white;
+  width: 248px;
+  height: 28px;
+  margin-top: 20px;
+  margin-left: 2px;
+  margin-bottom: 2px;
+  border: 2px solid #000000;
+  text-align: center;
+}
+
+#grid {
+    text-align: center;
+}
+
+.table {
+  display: table;
+}
+.table-row {
+  display: table-row;
+}
+.table-cell {
+  display: table-cell;
+  width: 28px;
+  height: 28px;
+  background-color: #000000;
+  border: 2px solid #ffffff;
+}
