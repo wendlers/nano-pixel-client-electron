@@ -13,11 +13,8 @@ let mainWindow
 
 function createWindow () {
 
-  let debug = false
+  let debug = false 
 
-  if(process.argv[2] && process.argv[2] == 'debug') {
-      debug = true
-  }
   // Create the browser window.
   if(debug) {
     mainWindow = new BrowserWindow({width: 1280, height: 680, resizable: false})

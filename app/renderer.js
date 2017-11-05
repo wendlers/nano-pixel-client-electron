@@ -18,7 +18,7 @@ function isBusy() {
 }
 
 function getLed(x, y) {
-  var led_addr = '#led-' + x + '-' + y;
+  let led_addr = '#led-' + x + '-' + y;
   return $(led_addr).css('background-color');
 }
 
@@ -28,9 +28,9 @@ function setLed(x, y) {
     return;
   }
 
-  var led_addr = '#led-' + x + '-' + y;
-  var col1 = $(led_addr).css('background-color');
-  var col2 = $('div[data-role=choosen-color]').css('background-color');
+  let led_addr = '#led-' + x + '-' + y;
+  let col1 = $(led_addr).css('background-color');
+  let col2 = $('div[data-role=choosen-color]').css('background-color');
 
   if(col1 == col2) {
     col2 = '#000000';
@@ -41,9 +41,9 @@ function setLed(x, y) {
 
 function blank()
 {
-  for(x = 0; x < 8; x++) {
-   for(y = 0; y < 8; y++) {
-     var led_addr = '#led-' + x + '-' + y;
+  for(let x = 0; x < 8; x++) {
+   for(let y = 0; y < 8; y++) {
+     let led_addr = '#led-' + x + '-' + y;
      $(led_addr).css('background-color', '#000000');
    }
  }
@@ -63,14 +63,14 @@ function upload()
 
   var matrix_buffer = [[] ,[], [], [], [], [], [], []];
 
-  for(x = 0; x < 8; x++) {
-    for(y = 0; y < 8; y++){
-      var c = getLed(x, y);
+  for(let x = 0; x < 8; x++) {
+    for(let y = 0; y < 8; y++){
+      let c = getLed(x, y);
       matrix_buffer[x][y] = c.substr(4,c.length - 5).split(', ');
     }
   }
 
-  var brightness = $('#brightness').val();
+  let brightness = $('#brightness').val();
 
   console.log('brightness: ' + brightness);
 

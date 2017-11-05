@@ -12,3 +12,7 @@ Run:
 
 
 Needs `sudo` since otherwise it would not be able to access BLE.
+
+Package:
+
+	npx electron-forge make
